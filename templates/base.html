@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Alunos</title>
+</head>
+<body>
+	<h1></h1>
+	<div id="app">
+		<my-menu></my-menu>
+		<hr>
+		<router-view></router-view>			
+
+	</div>
+	<script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+    <script src="https://unpkg.com/vuesax@4.0.1-alpha.16/dist/vuesax.min.js"></script>
+
+    {% include 'global_components/menu.vue' %}
+    {% include 'global_components/login.vue' %}
+    {% include 'global_components/home.vue' %}
+    {% include 'global_components/tooltip.vue' %}
+    {% include 'alunos/componentes/alunos.vue' %}
+	
+	<script>
+    const PageLogin = { template: "<my-page-login/>" }
+    const PageHome = { template: "<my-page-home/>" }
+    const PageAlunos = { template: "<my-page-alunos/>" }
+
+
+    const beforeEach = (to, from, next) => {
+        // Testar se a rota de destino "requiresAuth" é true
+        const auth = to.meta.requiresAuth
+        //testar autenticação Django ou sessionStorage
+        //const isAuthenticatedDjango = ()=>('{{ request.user.is_authenticated}}' === 'True')
+        //const isAuthenticatedRM = ()=>(Boolean(sessionStorage.user))
+        const isAuthenticated = ()=>(Boolean(sessionStorage.user) || true)
+        //Testar usuário autenticado
+        const isLoginRoute = route => route.path.indexOf('/login') !== -1
+
+        // verifica se a rota requer autenticação
+        if (to.meta.requiresAuth) {
+            // verifica se a rota é diferente de Login e usuário não tiver autenticado
+            if (!isLoginRoute(to) && !isAuthenticated()) {//qualquere rota além de login e não autenticado
+                next('/login')
+            } else {
+                if (isAuthenticated() && to.path === '/loginn') next('/')
+                next()
+            }
+        } else {
+            next()
+        }
+    }
+    const routes = [
+        { path: '/login', name: 'login', component: PageLogin, meta: { requiresAuth: true } },
+        { path: '/alunos', name: 'alunos', component: PageAlunos, meta: { requiresAuth: true } },
+        { path: '/', name: 'home', component: PageHome, meta: { requiresAuth: true } },
+        { path: '*', redirect: '/' } // Qualquer outra rota, direcionar para raíz
+    ]
+
+    const router = new VueRouter({
+      routes
+    })
+    router.beforeEach(beforeEach)
+		var app = new Vue({
+			router,
+			el: '#app',
+			delimiters: ['[[',']]'],
+			data:{
+				message: 'Hello Vue!'
+			},
+			methods:{
+
+			},
+			mouted(){
+				console.log('oi')
+			},
+			computed:{
+
+			},
+			watch:{
+
+			}
+		});
+	</script>
+</body>
+</html>
