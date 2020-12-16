@@ -10,3 +10,5 @@ source venc/Scripts/activate
 # instalar os requisitos
 pip install -r requisitos.txt
 
+
+python manage.py migrate 
