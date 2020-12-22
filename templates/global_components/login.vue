@@ -1,6 +1,7 @@
 <template id="page-login">
 	<div>
 		[[ message ]]
+		
 	</div>
 </template>
 
