@@ -5,7 +5,7 @@ python -m venv venv
 #Linux
 source venv/bin/activate
 #Windows  
-source venc/Scripts/activate
+source venv/Scripts/activate
 
 # instalar os requisitos
 pip install -r requisitos.txt
